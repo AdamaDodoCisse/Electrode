@@ -1,0 +1,16 @@
+{
+    "name": "r-code/injector",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adama Dodo CISSE",
+            "email": "adama.dodo.cisse@gmail.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "RCode\\Components\\" : ["RCode/components/"]
+        }
+    },
+    "require": {}
+}
