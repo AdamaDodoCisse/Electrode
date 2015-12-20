@@ -1,5 +1,5 @@
 {
-    "name": "r-code/injector",
+    "name": "r-code/components",
     "license": "MIT",
     "authors": [
         {
@@ -7,10 +7,16 @@
             "email": "adama.dodo.cisse@gmail.com"
         }
     ],
-    "autoload" : {
-        "psr-4" : {
-            "RCode\\Components\\" : ["RCode/components/"]
+    "autoload": {
+        "psr-4": {
+            "RCode\\Components\\": [
+                "RCode/components/"
+            ]
         }
     },
-    "require": {}
+    "require": {},
+
+    "require-dev": {
+        "phpunit/phpunit" : "*"
+    }
 }
