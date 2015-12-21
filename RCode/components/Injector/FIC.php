@@ -61,9 +61,14 @@ class FIC implements FICInterface {
                 } else {
                     return $this->dic->getInstance($className);
                 }
+            } else {
+                if($singleton === true) {
+                    return $this->dic->getSingleton($reflectionParameter->getName());
+                } else {
+                    return $this->dic->getInstance($reflectionParameter->getName());
+                }
             }
         }
-        throw new \Exception('Impossible to resolve <code>'. $reflectionParameter->getName() . '</code>');
     }
 
     /**
