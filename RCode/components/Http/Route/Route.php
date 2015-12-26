@@ -1,7 +1,6 @@
 <?php
 
 namespace RCode\Components\Http\Route;
-use Symfony\Component\Yaml\Exception\RuntimeException;
 
 /**
  * Class Route
