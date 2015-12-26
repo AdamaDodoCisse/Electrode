@@ -1,6 +1,7 @@
 <?php
 
 namespace RCode\Components\Http\Route;
+use Symfony\Component\Yaml\Exception\RuntimeException;
 
 /**
  * Class Route
@@ -9,38 +10,38 @@ namespace RCode\Components\Http\Route;
 class Route
 {
     /**
-     * @var
+     * @var string|null
      */
     private $name;
 
     /**
-     * @var array
+     * @var string []
      */
     private $patterns = array();
 
     /**
-     * @var
+     * @var string
      */
     private $url;
 
     /**
-     * @var
+     * @var string []
      */
     private $parameters = array();
 
     /**
-     * @var
+     * @var Callable
      */
     private $security;
 
     /**
-     * @var
+     * @var Callable
      */
     private $action;
 
     /**
      * Route constructor.
-     * @param $url
+     * @param string $url
      */
     public function __construct($url)
     {
@@ -48,23 +49,29 @@ class Route
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return $this
      */
     public function setName($name)
     {
+        if (!(is_null($name) || is_string($name)))
+            throw new \InvalidArgumentException();
+
         $this->name = $name;
         return $this;
     }
 
     /**
-     *
+     * @return string|null
      */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @return bool
+     */
     public function hasName()
     {
         return !is_null($this->name);
@@ -72,19 +79,23 @@ class Route
 
     /**
      * @param array $parameters
-     * @return mixed
-     * @throws \Exception
+     * @return string
      */
     public function getURL(array $parameters = array())
     {
         $url = $this->url;
         foreach ($this->getPatterns() as $key => $regex) {
             if (!isset($parameters[$key])) {
-                throw new \Exception("Parameter $key is not found");
+                throw new \InvalidArgumentException("Parameter $key is not found");
             }
+
+            if (!is_scalar($parameters[$key]))
+                throw new \InvalidArgumentException();
+
             if (!preg_match("#^" . $regex . "$#", $parameters[$key])) {
-                throw new \Exception($parameters[$key] . " not match (" . $regex . ')');
+                throw new \InvalidArgumentException($parameters[$key] . " not match (" . $regex . ')');
             }
+
             $url = str_replace(":$key", $parameters[$key], $url);
         }
         return $url;
@@ -97,6 +108,9 @@ class Route
      */
     public function setPattern($parameter, $constraint)
     {
+        if (!(is_string($parameter) && is_string($constraint)))
+            throw new \InvalidArgumentException();
+
         if (isset($this->patterns[$parameter])) {
             $this->patterns[$parameter] = (string)$constraint;
         }
@@ -123,15 +137,23 @@ class Route
      */
     public function setURL($url)
     {
+        if (!is_string($url)) {
+            throw new \InvalidArgumentException();
+        }
+
         preg_match_all('#:([\w\d]+[\w\d_]*[\w\d]+)#', $url, $patterns);
         $this->patterns = array();
         foreach ($patterns[1] as $pattern) {
             $this->patterns[$pattern] = ".+";
         }
+
         $this->url = $url;
         return $this;
     }
 
+    /**
+     * @return string []
+     */
     public function getPatterns()
     {
         return $this->patterns;
@@ -143,6 +165,9 @@ class Route
      */
     public function accept($url)
     {
+        if (!is_string($url)) {
+            throw new \InvalidArgumentException();
+        }
         $uri = $this->url;
         foreach ($this->getPatterns() as $key => $regex) {
             $uri = str_replace(":$key", "(?P<$key>$regex)", $uri);
@@ -183,7 +208,6 @@ class Route
         return $this;
     }
 
-
     /**
      * @return mixed
      */
@@ -193,7 +217,7 @@ class Route
     }
 
     /**
-     * @return array
+     * @return string []
      */
     public function getParameters()
     {
