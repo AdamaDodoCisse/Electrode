@@ -78,7 +78,7 @@ class Route
     public function getURL(array $parameters = array())
     {
         $url = $this->url;
-        foreach ($this->getParameters() as $key => $regex) {
+        foreach ($this->getPatterns() as $key => $regex) {
             if (!isset($parameters[$key])) {
                 throw new \Exception("Parameter $key is not found");
             }
