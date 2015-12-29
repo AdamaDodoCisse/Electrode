@@ -177,9 +177,45 @@ class Request implements RequestInterface
      * @param $url
      * @return mixed
      */
-    public function redirect($url)
+    public function redirect($url, $status = HTTP_REDIRECT)
     {
-        header("location: $url");
+        header("location: $url", true, $status);
         exit();
+    }
+
+    /**
+     * @return array
+     */
+    public function allPOST()
+    {
+        return $_POST;
+    }
+
+    /**
+     * @return array
+     */
+    public function allGET()
+    {
+        return $_GET;
+    }
+
+    /**
+     * @param $key
+     * @param null $defaultValue
+     * @return mixed
+     */
+    public function valueOfGET($key, $defaultValue = null)
+    {
+        return isset($this->allGET()[$key]) ? $this->allGET()[$key] : $defaultValue;
+    }
+
+    /**
+     * @param $key
+     * @param null $defaultValue
+     * @return null
+     */
+    public function valueOfPOST($key, $defaultValue = null)
+    {
+        return isset($this->allPOST()[$key]) ? $this->allPOST()[$key] : $defaultValue;
     }
 }

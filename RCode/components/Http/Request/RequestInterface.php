@@ -63,8 +63,31 @@ interface RequestInterface
     public function isAJAX();
 
     /**
-     * @param $url
+     * @return array
+     */
+    public function allPOST();
+
+    /**
+     * @return array
+     */
+    public function allGET();
+
+    /**
+     * @param $key
      * @return mixed
      */
-    public function redirect($url);
+    public function valueOfGET($key);
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    public function valueOfPOST($key);
+
+    /**
+     * @param $url
+     * @param int $status
+     * @return mixed
+     */
+    public function redirect($url, $status = 0);
 }
