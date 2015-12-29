@@ -90,4 +90,9 @@ interface RequestInterface
      * @return mixed
      */
     public function redirect($url, $status = 0);
+
+    /**
+     * @return mixed
+     */
+    public function getStatus();
 }

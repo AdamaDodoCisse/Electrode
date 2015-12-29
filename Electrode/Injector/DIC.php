@@ -18,7 +18,6 @@ class DIC implements DICInterface
      * @var array
      */
     private $singletonInstance = [];
-
     /**
      * @param $name
      * @return mixed

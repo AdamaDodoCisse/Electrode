@@ -198,4 +198,12 @@ class Request implements RequestInterface
     {
         return $_POST;
     }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+
+    }
 }

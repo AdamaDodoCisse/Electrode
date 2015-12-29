@@ -17,7 +17,6 @@ class FileTest extends PHPUnit_Framework_TestCase
         $this->file->setTemporaryPath('tmp/image.01');
     }
 
-
     public function testGetError()
     {
         $this->assertEquals($this->file->getError(), 0);

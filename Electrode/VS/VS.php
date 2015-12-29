@@ -1,11 +1,11 @@
 <?php
 
-namespace Electrode\ElectrodeVS;
+namespace Electrode\VS;
 
 use InvalidArgumentException;
 use RuntimeException;
 
-class ElectrodeVS
+class VS
 {
 
     private $parent;
@@ -103,7 +103,7 @@ class ElectrodeVS
         } else if (!empty($this->sections)) {
             throw new RuntimeException();
         } else if (in_array($this->filename, $this->cycles)) {
-            throw new RuntimeException();
+            throw new RuntimeException('Cycle detected in '. $this->filename);
         } else {
             $this->cycles[] = $this->filename;
             ob_start();
