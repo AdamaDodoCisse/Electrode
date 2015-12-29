@@ -1,10 +1,10 @@
 <?php
 
-namespace RCode\Components\Http\Session;
+namespace Electrode\Navigator\Http\Session;
 
 /**
  * Interface SessionInterface
- * @package RCode\Components\Http\Session
+ * @package Electrode\Navigator\Http\Session
  */
 interface SessionInterface
 {
@@ -12,7 +12,7 @@ interface SessionInterface
     /**
      * @param $key
      * @param $value
-     * @return mixed
+     * @return $this
      */
     public function set($key, $value);
 
@@ -25,7 +25,7 @@ interface SessionInterface
     /**
      * @param $key
      * @param $value
-     * @return mixed
+     * @return $this
      */
     public function setFlash($key, $value);
 

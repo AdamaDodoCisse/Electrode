@@ -1,10 +1,9 @@
 <?php
 
-namespace RCode\Components\Http\File;
-
+namespace Electrode\Navigator\Http\File;
 /**
  * Class File
- * @package RCode\Components\Http\File
+ * @package Electrode\Navigator\Http\File
  */
 class File
 {
@@ -33,6 +32,14 @@ class File
     private $type;
 
     /**
+     * @return mixed
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    /**
      * @param $error
      */
     public function setError($error)
@@ -43,9 +50,9 @@ class File
     /**
      * @return mixed
      */
-    public function getError()
+    public function getExtension()
     {
-        return $this->error;
+        return pathinfo($this->getFilename(), PATHINFO_EXTENSION);
     }
 
     /**
@@ -65,38 +72,6 @@ class File
     }
 
     /**
-     * @return mixed
-     */
-    public function getTemporaryPath()
-    {
-        return $this->temporaryName;
-    }
-
-    /**
-     * @param $temporaryPath
-     */
-    public function setTemporaryPath($temporaryPath)
-    {
-        $this->temporaryPath = $this->expandHomeDirectory($temporaryPath);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getExtension()
-    {
-        return pathinfo($this->getFilename(), PATHINFO_EXTENSION);
-    }
-
-    /**
-     * @param $size
-     */
-    public function setSize($size)
-    {
-        $this->size = $size;
-    }
-
-    /**
      * @return int
      */
     public function getSize()
@@ -108,14 +83,60 @@ class File
     }
 
     /**
+     * @param $size
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTemporaryPath()
+    {
+        return $this->temporaryPath;
+    }
+
+    /**
+     * @param $temporaryPath
+     */
+    public function setTemporaryPath($temporaryPath)
+    {
+        $this->temporaryPath = $this->expandHomeDirectory($temporaryPath);
+    }
+
+    /**
+     * @param $filename
+     * @return string
+     */
+    protected function expandHomeDirectory($filename)
+    {
+        if (isset($_ENV['HOME'])) {
+            $home = $_ENV['HOME'];
+        } else {
+            $home = null;
+        }
+        return realpath(str_replace("~", $home, $filename));
+    }
+
+    /**
      * @return string
      */
     public function getMimeType()
     {
         if (is_null($this->type)) {
-            $this->setMimeType(mime_content_type($this->getTemporaryName()));
+            $this->setMimeType(mime_content_type($this->getTemporaryPath()));
         }
         return $this->type;
+    }
+
+    /**
+     * @param $type
+     */
+    public function setMimeType($type)
+    {
+        $this->type = $type;
     }
 
     /**
@@ -138,26 +159,5 @@ class File
         if (file_exists($this->getTemporaryPath())) {
             unlink($this->getTemporaryPath());
         }
-    }
-
-    /**
-     * @param $filename
-     * @return string
-     */
-    protected function expandHomeDirectory($filename) {
-        if (isset($_ENV['HOME'])) {
-            $home = $_ENV['HOME'];
-        } else {
-            $home = null;
-        }
-        return realpath(str_replace("~", $home, $filename));
-    }
-
-    /**
-     * @param $type
-     */
-    public function setMimeType($type)
-    {
-        $this->type = $type;
     }
 }

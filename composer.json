@@ -1,5 +1,5 @@
 {
-    "name": "r-code/components",
+    "name": "electrode/electrode",
     "license": "MIT",
     "version": "1.0",
     "authors": [
@@ -10,8 +10,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "RCode\\Components\\": [
-                "RCode/Components/"
+            "Electrode": [
+                "Electrode/"
             ]
         }
     },

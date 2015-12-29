@@ -1,8 +1,8 @@
 <?php
-namespace RCode\Components\Test\Http;
+namespace Electrode\Navigator\Test\Http;
 
+use Electrode\Navigator\Http\File\File;
 use PHPUnit_Framework_TestCase;
-use RCode\Components\Http\File\File;
 
 require_once __DIR__."/../../../../vendor/autoload.php";
 

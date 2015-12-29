@@ -1,10 +1,10 @@
 <?php
-namespace RCode\Components\Test\Http;
+namespace Electrode\Navigator\Test\Http;
 
-use RCode\Components\Http\Route\Route;
-use RCode\Components\Http\Route\RouteManager;
-use RCode\Components\Http\Route\RouteNotFoundException;
-use RCode\Components\Http\Route\RouterReaderInterface;
+use Electrode\Navigator\Http\Route\Route;
+use Electrode\Navigator\Http\Route\RouteManager;
+use Electrode\Navigator\Http\Route\RouteNotFoundException;
+use Electrode\Navigator\Http\Route\RouterReaderInterface;
 
 require_once __DIR__ . "/../../../../vendor/autoload.php";
 

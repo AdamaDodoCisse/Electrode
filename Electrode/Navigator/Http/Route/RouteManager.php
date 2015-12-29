@@ -1,10 +1,10 @@
 <?php
 
-namespace RCode\Components\Http\Route;
+namespace Electrode\Navigator\Http\Route;
 
 /**
  * Class RouteManager
- * @package RCode\Components\Http\Route
+ * @package Electrode\Navigator\Http\Route
  */
 class RouteManager
 {

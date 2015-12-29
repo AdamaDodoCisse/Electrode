@@ -1,7 +1,8 @@
 <?php
 
-namespace RCode\Components\Http\Request;
-use RCode\Components\Http\File\File;
+namespace Electrode\Navigator\Http\Request;
+
+use Electrode\Navigator\Http\File\File;
 
 /**
  * Class Request
@@ -9,23 +10,19 @@ use RCode\Components\Http\File\File;
  */
 class Request implements RequestInterface
 {
+    const METHOD_POST = "post";
+    const METHOD_GET = "get";
+    const METHOD_PUT = "put";
+    const METHOD_DELETE = "delete";
+    const METHOD_XML_HTTP_REQUEST = "xmlhttprequest";
     /**
      * @var
      */
     private $method;
-
+    /**
+     * @var File []
+     */
     private $files = array();
-
-    const METHOD_POST = "post";
-
-    const METHOD_GET = "get";
-
-    const METHOD_PUT = "put";
-
-    const METHOD_DELETE = "delete";
-
-    const METHOD_XML_HTTP_REQUEST = "xmlhttprequest";
-
     /**
      * @var
      */
@@ -36,13 +33,30 @@ class Request implements RequestInterface
         $this->captureFiles();
     }
 
+    private function captureFiles()
+    {
+        foreach ($_FILES as $key => $value) {
+            $list = $value;
+
+            foreach ($list['name'] as $k => $v) {
+                $file = new File();
+                $file->setFilename($v);
+                $file->setSize($value['size'][$k]);
+                $file->setError($value['error'][$k]);
+                $file->setTemporaryPath($value['tmp_name'][$k]);
+                $file->setMimeType($value['type'][$k]);
+                $this->files[$key][] = $file;
+            }
+        }
+    }
+
     /**
      * @param $method
      * @return mixed
      */
-    public function setMethod($method)
+    public function isMethod($method)
     {
-        $this->method = strtolower((string)$method);
+        return $this->getMethod() === $method;
     }
 
     /**
@@ -57,9 +71,9 @@ class Request implements RequestInterface
      * @param $method
      * @return mixed
      */
-    public function isMethod($method)
+    public function setMethod($method)
     {
-        return $this->getMethod() === $method;
+        $this->method = strtolower((string)$method);
     }
 
     /**
@@ -117,23 +131,6 @@ class Request implements RequestInterface
     /**
      * @return mixed
      */
-    public function getHeaders()
-    {
-        return $this->headers;
-    }
-
-    /**
-     * @param HeaderInterface $headerInterface
-     * @return mixed
-     */
-    public function addHeader(HeaderInterface $headerInterface)
-    {
-        $this->headers[] = $headerInterface;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getURL()
     {
         return $this->url;
@@ -156,23 +153,6 @@ class Request implements RequestInterface
         return $this->files;
     }
 
-    private function captureFiles()
-    {
-        foreach ($_FILES as $key => $value) {
-            $list = $value;
-
-            foreach ($list['name'] as $k => $v) {
-                $file = new File();
-                $file->setFilename($v);
-                $file->setSize($value['size'][$k]);
-                $file->setError($value['error'][$k]);
-                $file->setTemporaryPath($value['tmp_name'][$k]);
-                $file->setMimeType($value['type'][$k]);
-                $this->files[$key][] = $file;
-            }
-        }
-    }
-
     /**
      * @param $url
      * @return mixed
@@ -181,22 +161,6 @@ class Request implements RequestInterface
     {
         header("location: $url", true, $status);
         exit();
-    }
-
-    /**
-     * @return array
-     */
-    public function allPOST()
-    {
-        return $_POST;
-    }
-
-    /**
-     * @return array
-     */
-    public function allGET()
-    {
-        return $_GET;
     }
 
     /**
@@ -210,6 +174,14 @@ class Request implements RequestInterface
     }
 
     /**
+     * @return array
+     */
+    public function allGET()
+    {
+        return $_GET;
+    }
+
+    /**
      * @param $key
      * @param null $defaultValue
      * @return null
@@ -217,5 +189,13 @@ class Request implements RequestInterface
     public function valueOfPOST($key, $defaultValue = null)
     {
         return isset($this->allPOST()[$key]) ? $this->allPOST()[$key] : $defaultValue;
+    }
+
+    /**
+     * @return array
+     */
+    public function allPOST()
+    {
+        return $_POST;
     }
 }

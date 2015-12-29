@@ -1,10 +1,10 @@
 <?php
 
-namespace RCode\Components\Http\Request;
+namespace Electrode\Navigator\Http\Request;
 
 /**
  * Interface RequestInterface
- * @package RCode\Components\Http\Request
+ * @package Electrode\Navigator\Http\Request
  */
 interface RequestInterface
 {

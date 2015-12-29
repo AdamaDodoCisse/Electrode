@@ -1,6 +1,6 @@
 <?php
 
-namespace RCode\Components\Injector\Interfaces;
+namespace Electrode\Injector\Interfaces;
 
 /**
  * Interface DICInterface

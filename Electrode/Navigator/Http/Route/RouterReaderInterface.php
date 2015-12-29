@@ -1,10 +1,10 @@
 <?php
 
-namespace RCode\Components\Http\Route;
+namespace Electrode\Navigator\Http\Route;
 
 /**
  * Interface RouterReaderInterface
- * @package RCode\Components\Http\Route
+ * @package Electrode\Navigator\Http\Route
  */
 interface RouterReaderInterface
 {

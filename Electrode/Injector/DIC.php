@@ -1,12 +1,12 @@
 <?php
 
-namespace RCode\Components\Injector;
+namespace Electrode\Injector;
 
-use RCode\Components\Injector\Interfaces\DICInterface;
+use Electrode\Injector\Interfaces\DICInterface;
 
 /**
  * Class DIC
- * @package RCode\Components\Injector
+ * @package Electrode\Injector
  */
 class DIC implements DICInterface
 {
@@ -21,23 +21,24 @@ class DIC implements DICInterface
 
     /**
      * @param $name
-     * @param callable $callable
-     * @return mixed|void
+     * @return mixed
+     * @throws \Exception
      */
-    public function setInstance($name , Callable $callable) {
-        $this->instance[rtrim($name,'\\')] = $callable;
-    }
+    public function getSingleton($name)
+    {
+        if (isset($this->singletonInstance[$name])) {
+            if (is_null($this->singletonInstance[$name]['value'])) {
+                $this->singletonInstance[$name]['value'] = $this->singletonInstance[$name]['callback']();
+            }
+            return $this->singletonInstance[$name]['value'];
+        } else {
 
-    /**
-     * @param $name
-     * @param callable $callable
-     * @return mixed|void
-     */
-    public function setSingleton($name, Callable $callable) {
-        $this->singletonInstance[$name] = array(
-            'value' => null,
-            'callback' => $callable
-        );
+            $instance = $this->getInstance($name);
+            $this->setSingleton($name, function () use ($instance) {
+                return $instance;
+            });
+            return $this->getSingleton($name);
+        }
     }
 
     /**
@@ -45,7 +46,8 @@ class DIC implements DICInterface
      * @return mixed
      * @throws \Exception
      */
-    public function getInstance($name) {
+    public function getInstance($name)
+    {
         if (!is_string($name)) {
             throw new \Exception('Name must be a string');
         }
@@ -55,19 +57,19 @@ class DIC implements DICInterface
             return $this->instance[$name]();
         } else {
             $reflectionClass = new \ReflectionClass($name);
-            if(!$reflectionClass->isInstantiable()) {
+            if (!$reflectionClass->isInstantiable()) {
                 throw new \Exception('Class ' . $name . ' is not instantiable');
             }
             $constructor = $reflectionClass->getConstructor();
 
-            if(!is_null($constructor)) {
+            if (!is_null($constructor)) {
                 $parameters = $constructor->getParameters();
                 $params = $this->getReflectionParametersValues($parameters);
             } else {
                 $params = array();
             }
 
-            $this->setInstance($name, function() use ($reflectionClass, $params){
+            $this->setInstance($name, function () use ($reflectionClass, $params) {
                 return $reflectionClass->newInstanceArgs($params);
             });
 
@@ -77,23 +79,12 @@ class DIC implements DICInterface
 
     /**
      * @param $name
-     * @return mixed
-     * @throws \Exception
+     * @param callable $callable
+     * @return mixed|void
      */
-    public function getSingleton($name) {
-        if (isset($this->singletonInstance[$name])) {
-            if(is_null($this->singletonInstance[$name]['value'])) {
-                $this->singletonInstance[$name]['value'] = $this->singletonInstance[$name]['callback']();
-            }
-            return $this->singletonInstance[$name]['value'];
-        } else {
-
-            $instance = $this->getInstance($name);
-            $this->setSingleton($name, function() use ($instance) {
-                return $instance;
-            });
-            return $this->getSingleton($name);
-        }
+    public function setInstance($name, Callable $callable)
+    {
+        $this->instance[rtrim($name, '\\')] = $callable;
     }
 
     /**
@@ -108,8 +99,8 @@ class DIC implements DICInterface
             try {
                 $parameterName = $parameter->getName();
                 $params[$parameterName] = $this->getReflectionParameterValue($parameter);
-            } catch (\Exception $exception) {}
-
+            } catch (\Exception $exception) {
+            }
         }
         return $params;
     }
@@ -119,7 +110,8 @@ class DIC implements DICInterface
      * @return mixed
      * @throws \Exception
      */
-    protected function getReflectionParameterValue(\ReflectionParameter $parameter) {
+    protected function getReflectionParameterValue(\ReflectionParameter $parameter)
+    {
 
         if ($parameter->isOptional()) {
             return $parameter->getDefaultValue();
@@ -131,5 +123,18 @@ class DIC implements DICInterface
                 return $this->getInstance($parameterClass->getName());
             }
         }
+    }
+
+    /**
+     * @param $name
+     * @param callable $callable
+     * @return mixed|void
+     */
+    public function setSingleton($name, Callable $callable)
+    {
+        $this->singletonInstance[$name] = array(
+            'value' => null,
+            'callback' => $callable
+        );
     }
 }

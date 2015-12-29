@@ -1,11 +1,11 @@
 <?php
 
-namespace RCode\Components\Http\Route;
+namespace Electrode\Navigator\Http\Route;
 
 use Exception;
 
 /**
  * Class RouteNotFoundException
- * @package RCode\Components\Http\Route
+ * @package Electrode\Navigator\Http\Route
  */
 class RouteNotFoundException extends Exception {}

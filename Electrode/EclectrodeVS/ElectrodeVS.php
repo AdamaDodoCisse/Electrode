@@ -1,5 +1,10 @@
 <?php
 
+namespace Electrode\ElectrodeVS;
+
+use InvalidArgumentException;
+use RuntimeException;
+
 class ElectrodeVS
 {
 
@@ -21,23 +26,46 @@ class ElectrodeVS
      */
     public function __construct($filename, array $parameters = array())
     {
-        $this->_setFilename_($filename);
-        $this->_setParameters_($parameters);
+        $this->setFilename($filename);
+        $this->setParameters($parameters);
     }
 
     /**
-     * @param string $sectionName
+     * @param $filename
      */
-    public function _section_($sectionName)
+    public function setFilename($filename)
+    {
+        if (is_string($filename)) {
+            $this->filename = $filename;
+        } else {
+            throw new InvalidArgumentException();
+        }
+    }
+
+    /**
+     * @param array $parameters
+     * @return $this
+     */
+    public function setParameters(array $parameters)
+    {
+        $this->parameters = $parameters;
+        return $this;
+    }
+
+    /**
+     * @param $sectionName
+     */
+    public function section($sectionName)
     {
         $this->sections[] = $sectionName;
         ob_start();
     }
 
     /**
-     * @param string $sectionName
+     * @param $sectionName
+     * @throws RuntimeException
      */
-    public function _endSection_($sectionName)
+    public function endSection($sectionName)
     {
         $content = ob_get_clean();
         if (!is_string($sectionName)) {
@@ -51,49 +79,20 @@ class ElectrodeVS
     }
 
     /**
-     * @param string|null $parent
-     */
-    public function _extends_($parent)
-    {
-        if (is_null($parent) || is_string($parent)) {
-            $this->parent = $parent;
-        } else {
-            throw new InvalidArgumentException();
-        }
-    }
-
-    /**
      * @param $filename
      * @param array $parameters
      */
-    public function _include_($filename, array $parameters = array())
+    public function _include($filename, array $parameters = array())
     {
-        echo (new ElectrodeVS($filename, $parameters))->_renderString_();
+        echo (new ElectrodeVS($filename, $parameters))->renderString();
     }
 
     /**
-     * @param string $filename
+     * @return string
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
-    public function _setFilename_($filename)
-    {
-        if (is_string($filename)) {
-            $this->filename = $filename;
-        } else {
-            throw new InvalidArgumentException();
-        }
-    }
-
-    /**
-     * @param array $parameters
-     * @return $this
-     */
-    public function _setParameters_(array $parameters)
-    {
-        $this->parameters = $parameters;
-        return $this;
-    }
-
-    public function _renderString_()
+    public function renderString()
     {
         if (!file_exists($this->filename)) {
             throw new RuntimeException();
@@ -112,8 +111,8 @@ class ElectrodeVS
             $fileContent = ob_get_clean();
             if (!is_null($this->parent)) {
                 $this->filename = $this->parent;
-                $this->_extends_(null);
-                return $this->_renderString_();
+                $this->inherited(null);
+                return $this->renderString();
             } else {
                 $this->filename = $this->cycles[0];
                 $this->cycles = [];
@@ -122,8 +121,20 @@ class ElectrodeVS
         }
     }
 
-    public function _render()
+    /**
+     * @param $parent
+     */
+    public function inherited($parent)
     {
-        echo $this->_renderString_();
+        if (is_null($parent) || is_string($parent)) {
+            $this->parent = $parent;
+        } else {
+            throw new InvalidArgumentException();
+        }
+    }
+
+    public function render()
+    {
+        echo $this->renderString();
     }
 }

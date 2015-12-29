@@ -1,10 +1,10 @@
 <?php
 
-namespace RCode\Components\Http\Route;
+namespace Electrode\Navigator\Http\Route;
 
 /**
  * Class Route
- * @package RCode\Components\Http\Route
+ * @package Electrode\Navigator\Http\Route
  */
 class Route
 {
@@ -48,6 +48,14 @@ class Route
     }
 
     /**
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * @param string $name
      * @return $this
      */
@@ -58,14 +66,6 @@ class Route
 
         $this->name = $name;
         return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -101,6 +101,34 @@ class Route
     }
 
     /**
+     * @param $url
+     * @return $this
+     */
+    public function setURL($url)
+    {
+        if (!is_string($url)) {
+            throw new \InvalidArgumentException();
+        }
+
+        preg_match_all('#:([\w\d]+[\w\d_]*[\w\d]+)#', $url, $patterns);
+        $this->patterns = array();
+        foreach ($patterns[1] as $pattern) {
+            $this->patterns[$pattern] = ".+";
+        }
+
+        $this->url = $url;
+        return $this;
+    }
+
+    /**
+     * @return string []
+     */
+    public function getPatterns()
+    {
+        return $this->patterns;
+    }
+
+    /**
      * @param $parameter
      * @param $constraint
      * @return $this
@@ -128,34 +156,6 @@ class Route
         } else {
             return null;
         }
-    }
-
-    /**
-     * @param $url
-     * @return $this
-     */
-    public function setURL($url)
-    {
-        if (!is_string($url)) {
-            throw new \InvalidArgumentException();
-        }
-
-        preg_match_all('#:([\w\d]+[\w\d_]*[\w\d]+)#', $url, $patterns);
-        $this->patterns = array();
-        foreach ($patterns[1] as $pattern) {
-            $this->patterns[$pattern] = ".+";
-        }
-
-        $this->url = $url;
-        return $this;
-    }
-
-    /**
-     * @return string []
-     */
-    public function getPatterns()
-    {
-        return $this->patterns;
     }
 
     /**
@@ -198,6 +198,14 @@ class Route
     }
 
     /**
+     * @return mixed
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
      * @param callable $action
      * @return $this
      */
@@ -205,14 +213,6 @@ class Route
     {
         $this->action = $action;
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAction()
-    {
-        return $this->action;
     }
 
     /**

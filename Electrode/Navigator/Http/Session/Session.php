@@ -1,14 +1,10 @@
 <?php
 
-namespace RCode\Components\Http\Session;
+namespace Electrode\Navigator\Http\Session;
 
 /**
  * Class Session
- * @package RCode\Components\Http
- */
-/**
- * Class Session
- * @package RCode\Components\Http\Session
+ * @package Electrode\Navigator\Http\Session
  */
 class Session implements SessionInterface
 {
@@ -33,29 +29,23 @@ class Session implements SessionInterface
     /**
      * @param $key
      * @param $value
+     * @return $this
      */
     public function set($key, $value)
     {
         $_SESSION[$key] = $value;
-    }
-
-    /**
-     * @param $key
-     * @return null
-     */
-    public function get($key)
-    {
-        return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
+        return $this;
     }
 
     /**
      * @param $key
      * @param $value
-     * @return mixed
+     * @return $this
      */
     public function setFlash($key, $value)
     {
         $_SESSION[$this->flashName][$key] = $value;
+        return $this;
     }
 
     /**
@@ -89,5 +79,14 @@ class Session implements SessionInterface
     public function hasKey($key)
     {
         return !is_null($this->get($key));
+    }
+
+    /**
+     * @param $key
+     * @return null
+     */
+    public function get($key)
+    {
+        return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
     }
 }
