@@ -222,4 +222,13 @@ class Route
     {
         return $this->parameters;
     }
+
+    /**
+     * @param $name
+     * @return null|string
+     */
+    public function getParameter($name)
+    {
+        return isset($this->getParameters()[$name]) ? $this->getParameters()[$name] : null;
+    }
 }
