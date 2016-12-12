@@ -100,7 +100,7 @@ class VS implements \ArrayAccess
      */
     public function _include($filename, array $parameters = array())
     {
-        echo (new ElectrodeVS($filename, $parameters))->renderString();
+        echo (new VS($filename, $parameters))->renderString();
     }
 
     /**
